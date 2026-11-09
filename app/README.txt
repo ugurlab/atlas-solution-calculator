@@ -1,5 +1,5 @@
 ATLaS — Solution Calculator
-Local development draft 0.2.1
+Version 0.2.2 (preview)
 Copyright (c) 2026 Ugur Comlekcioglu. MIT License.
 
 Open atlas-solution-calculator.html in Chrome, Edge or Firefox.
@@ -39,7 +39,7 @@ Use current stock-label or certificate values for concentrated reagents and your
 procedure and reagent SDS for handling and preparation.
 
 This is the solution-calculation part of ATLaS. Buffer recipes, pH, titration, normality and
-chemical-database lookup are not included in this draft. Enter reagent properties manually.
+chemical-database lookup are not included in this version. Enter reagent properties manually.
 
 The application and accompanying documentation are in English.
 Credits: designed by Ugur Comlekcioglu; developed with ChatGPT (OpenAI), with draft 0.2 review notes from Claude (Anthropic).
@@ -47,7 +47,7 @@ Original ATLaS publication details supplied in the notebook are preserved in Abo
 The application uses the MIT License (LICENSE.txt); Instrument Sans uses the SIL Open Font
 License (FONT-LICENSE.txt).
 
-This draft has not been uploaded to GitHub or published online.
+Download releases: https://github.com/ugurlab/atlas-solution-calculator/releases
 
 Serial dilution defaults to Same transfer volume in every tube (standard). Choose
 Same final volume left in every tube for equal remaining volumes using varying transfers. The table shows transfer,
