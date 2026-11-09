@@ -1,6 +1,6 @@
 # ATLaS — Solution Calculator
 
-Version **0.2.1** (preview), designed by Ugur Comlekcioglu. Developed with ChatGPT; draft 0.2 incorporates review notes from Claude (Anthropic). Download the offline app from [the tool page](https://ugurlab.github.io/atlas-solution-calculator/) or [Release v0.2.1](https://github.com/ugurlab/atlas-solution-calculator/releases/tag/v0.2.1).
+Version **0.2.2** (preview), designed by Ugur Comlekcioglu. Developed with ChatGPT; draft 0.2 incorporates review notes from Claude (Anthropic). Download the offline app from [the tool page](https://ugurlab.github.io/atlas-solution-calculator/) or [Release v0.2.2](https://github.com/ugurlab/atlas-solution-calculator/releases/tag/v0.2.2).
 
 ## Run
 
@@ -41,7 +41,7 @@ See `VALIDATION.md` for tests and their limits. Shared site rules are maintained
 
 Comlekcioglu, U. and Comlekcioglu, N. (2021). ATLaS: Assistant Software for Life Scientists to Use in Calculations of Buffer Solutions. *Tehnički glasnik*, 15(4), 541–545. https://doi.org/10.31803/tg-20210326070107
 
-Verified against https://hrcak.srce.hr/en/265006. This draft is the separate solution calculator; the buffer application is planned separately.
+Verified against https://hrcak.srce.hr/en/265006. This is the separate solution calculator; the buffer application is planned separately.
 
 ## Licence and credits
 
