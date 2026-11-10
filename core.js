@@ -42,9 +42,9 @@ const AtlasCalc = (() => {
     positive(percent,'Percentage'); positive(total,'Final amount');
     if(!['wv','vv','ww'].includes(basis))fail('Choose a percentage basis.');
     if(basis!=='wv')fraction(percent);
-    const f=fraction(assay,'Mass assay');
-    if(basis==='vv'&&assay!==100)fail('Mass assay correction for % v/v requires additional density information. Use a pure liquid or a mass-based preparation.');
-    if(basis==='ww'&&percent>assay*(1+1e-12))fail('The target % w/w exceeds the reagent mass assay. This preparation cannot reach that target.');
+    const f=fraction(assay,'Reagent purity');
+    if(basis==='vv'&&assay!==100)fail('Purity correction for % v/v requires additional density information. Use a pure liquid or a mass-based preparation.');
+    if(basis==='ww'&&percent>assay*(1+1e-12))fail('The target % w/w exceeds the reagent purity. This preparation cannot reach that target.');
     const pure=finite(percent*total/100), solute=finite(pure/f);
     return {solute,pure,solvent:basis==='ww'?Math.max(0,total-solute):null};
   }
@@ -59,12 +59,12 @@ const AtlasCalc = (() => {
   }
   function molarMass(concentration, volume, mw, assay=100) {
     positive(concentration,'Concentration');positive(volume,'Final volume');positive(mw,'Molar mass');
-    const f=fraction(assay,'Mass assay');
+    const f=fraction(assay,'Reagent purity');
     return finite(concentration*volume*mw/f);
   }
   function molarity(mass, volume, mw, assay=100) {
     positive(mass,'Mass');positive(volume,'Final volume');positive(mw,'Molar mass');
-    const f=fraction(assay,'Mass assay');
+    const f=fraction(assay,'Reagent purity');
     return finite(mass*f/mw/volume);
   }
   function dilution(stock, target, finalAmount) {
@@ -74,7 +74,7 @@ const AtlasCalc = (() => {
     return {take, remainder:Math.max(0,finalAmount-take), equal:ratio===1};
   }
   function concentrated(assay, density, mw, target, finalVolume) {
-    fraction(assay,'Stock assay');positive(density,'Stock density');positive(mw,'Molar mass');
+    fraction(assay,'Stock concentration');positive(density,'Stock density');positive(mw,'Molar mass');
     const stock=finite(10*assay*density/mw);
     return {stock,...dilution(stock,target,finalVolume)};
   }

@@ -47,3 +47,7 @@ Targeted serial-form layout checks at viewport overrides 390, 1024 and 1440 show
 ## Version 0.2.2 release patch
 
 Presentation-only release: updated version and publication wording. Calculation engine, interface logic and formulas are unchanged from 0.2.1. Rebuilt the offline HTML and reran all 343 checks, including isolated reproducible builds.
+
+## Version 0.2.3 release patch
+
+Wording and packaging release; calculation engine and formulas are unchanged. The purity input is now labelled Reagent purity (%) with a bottle-label hint, and the concentrated-reagent input is labelled Stock concentration (% w/w); notes, formulas, error messages and About text use the same names. The MIT and SIL OFL texts are written by the build into a comment at the top of the HTML file (the OFL's dashed rules become = rules and its spaced double hyphens become en dashes, because HTML comments cannot contain two hyphens). verify.cjs adds 8 checks for the licence comment and the absence of separate licence files: 351 checks pass, including the isolated reproducible build. In browser (file://, 1440 px): standards mode, licence text not shown on screen, no network requests or page errors; 5% w/v in 250 mL at 80% purity gives 15.625 g; 81% w/w at 80% purity is rejected; the molar and concentrated examples and the 0.2.1 decimal and serial regression checks give the same results as 0.2.2.

@@ -1,6 +1,6 @@
 # ATLaS — Solution Calculator
 
-Version **0.2.2** (preview), designed by Ugur Comlekcioglu. Developed with ChatGPT; draft 0.2 incorporates review notes from Claude (Anthropic). Download the offline app from [the tool page](https://ugurlab.github.io/atlas-solution-calculator/) or [Release v0.2.2](https://github.com/ugurlab/atlas-solution-calculator/releases/tag/v0.2.2).
+Version **0.2.3** (preview), designed by Ugur Comlekcioglu. Developed with ChatGPT; draft 0.2 incorporates review notes from Claude (Anthropic). Download the offline app from [the tool page](https://ugurlab.github.io/atlas-solution-calculator/) or [Release v0.2.3](https://github.com/ugurlab/atlas-solution-calculator/releases/tag/v0.2.3).
 
 ## Run
 
@@ -15,17 +15,17 @@ node build.cjs
 node verify.cjs
 ```
 
-No package installation is needed. All build inputs, fonts and licence texts are in this directory. `vendor/` contains three Instrument Sans font files and the font/application licence texts; no sibling projects are referenced. Tests rebuild a copy in an unrelated temporary directory and compare its generated HTML with the tested build.
+No package installation is needed. All build inputs, fonts and licence texts are in this directory. `vendor/` contains three Instrument Sans font files and the font/application licence texts, which the build writes into a comment at the top of the HTML file; no sibling projects are referenced. Tests rebuild a copy in an unrelated temporary directory and compare its generated HTML with the tested build.
 
 For HTTP browser QA only, `node serve.cjs` starts a local preview on port 8791. This server is a development aid; the app itself is a standalone HTML file.
 
 ## Calculators
 
-- Percent solution preparation: % w/v and % w/w with mass-assay correction; % v/v assumes a pure liquid.
+- Percent solution preparation: % w/v and % w/w with reagent purity correction; % v/v assumes a pure liquid.
 - Percent/molarity conversions, including solution density for % w/w.
-- Molar preparation and its inverse, with mass-assay correction.
+- Molar preparation and its inverse, with reagent purity correction.
 - Single dilution, with separate concentration bases and a mass-based % w/w mode.
-- Preparation from concentrated reagent mass assay, density and molar mass.
+- Preparation from a concentrated reagent's % w/w (stock concentration), density and molar mass.
 - Mass concentration ↔ molarity using molar mass, with selectable units.
 - % w/v ↔ mass concentration.
 - Serial dilution defaults to Same transfer volume in every tube (standard). The optional Same final volume left in every tube mode is retained. Both produce a tube-by-tube plan and concentrations.
@@ -45,4 +45,4 @@ Verified against https://hrcak.srce.hr/en/265006. This is the separate solution 
 
 ## Licence and credits
 
-MIT License, copyright Ugur Comlekcioglu (`LICENSE`). Instrument Sans is distributed under the SIL Open Font License (`vendor/FONT-LICENSE.txt`). The application folder contains both licence texts. Development: ChatGPT (OpenAI). Review notes: Claude (Anthropic). Preserve the original authorship and third-party licence notices when sharing.
+MIT License, copyright Ugur Comlekcioglu (`LICENSE`). Instrument Sans is distributed under the SIL Open Font License (`vendor/FONT-LICENSE.txt`). Both licence texts are kept in a comment at the top of `atlas-solution-calculator.html`, so every downloaded copy carries them; the ZIP has no separate licence files. Development: ChatGPT (OpenAI). Review notes: Claude (Anthropic). Preserve the original authorship and third-party licence notices when sharing.

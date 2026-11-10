@@ -1,5 +1,5 @@
 ATLaS — Solution Calculator
-Version 0.2.2 (preview)
+Version 0.2.3 (preview)
 Copyright (c) 2026 Ugur Comlekcioglu. MIT License.
 
 Open atlas-solution-calculator.html in Chrome, Edge or Firefox.
@@ -7,11 +7,11 @@ No Python, installation, server, internet connection or account is required.
 The font and calculation code are included in the HTML file.
 
 Included calculators
-- Percent solution preparation: % w/v and % w/w with mass-assay correction; % v/v for a pure liquid.
+- Percent solution preparation: % w/v and % w/w with reagent purity correction; % v/v for a pure liquid.
 - Percent and molarity conversion: % w/v, and % w/w with solution density.
-- Molar solution preparation and molarity from a weighed mass, with mass-assay correction.
+- Molar solution preparation and molarity from a weighed mass, with reagent purity correction.
 - Dilution: molar, mass concentration, % w/v, % v/v and mass-based % w/w.
-- Concentrated reagents: stock mass assay, density and molar mass to target molarity.
+- Concentrated reagents: stock % w/w, density and molar mass to target molarity.
 - Unit conversion: mass, volume, molar concentration and mass concentration.
 - Mass concentration <-> molarity with molar mass; % w/v <-> mass concentration.
 - Serial dilution with a tube-by-tube plan and retained/mixed volume definitions.
@@ -32,7 +32,8 @@ There is no data upload, analytics, cloud connection or automatic network reques
 Reference links in About & sources require internet only if you choose to open them.
 
 Use the molar mass of the exact chemical form being weighed, including hydrates.
-Mass assay means chemical content by mass, not chromatographic area purity.
+Reagent purity is the chemical content by mass from the bottle label (often printed as
+"Assay >= 98%"), not chromatographic area purity. Leave it at 100 for a pure reagent.
 For volume-based preparation, enter the final solution volume, not the solvent volume.
 For % w/w preparation and dilution, enter final solution mass instead of volume.
 Use current stock-label or certificate values for concentrated reagents and your laboratory
@@ -44,8 +45,12 @@ chemical-database lookup are not included in this version. Enter reagent propert
 The application and accompanying documentation are in English.
 Credits: designed by Ugur Comlekcioglu; developed with ChatGPT (OpenAI), with draft 0.2 review notes from Claude (Anthropic).
 Original ATLaS publication details supplied in the notebook are preserved in About & sources.
-The application uses the MIT License (LICENSE.txt); Instrument Sans uses the SIL Open Font
-License (FONT-LICENSE.txt).
+The application uses the MIT License; the embedded Instrument Sans font uses the SIL Open Font
+License. Both licence texts are in a comment at the top of atlas-solution-calculator.html.
+
+Changes in 0.2.3: the purity field is now called Reagent purity (%), the concentrated-reagent
+field is called Stock concentration (% w/w), and the licence texts moved into the HTML file.
+Calculations are unchanged.
 
 Download releases: https://github.com/ugurlab/atlas-solution-calculator/releases
 

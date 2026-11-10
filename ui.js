@@ -5,7 +5,7 @@
   const icons={percent:'<path d="m7 17 10-10"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',molar:'<path d="M8 3h8M10 3v8L5 20c-.4.8 0 1 1 1h12c1 0 1.4-.2 1-1l-5-9V3M8 15h8"/>',dilution:'<path d="M7 3v10a5 5 0 0 0 10 0V3M5 3h14M7 10h10M10 15h4"/>',concentrated:'<path d="M9 3h6v4l3 3v11H6V10l3-3V3ZM9 14h6M9 17h4"/>',converter:'<path d="M4 8h16m-4-4 4 4-4 4M20 16H4m4-4-4 4 4 4"/>',result:'<path d="M5 3h14v18H5zM8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 18h2m4 0h2"/>'};
   icons.conversions=icons.converter;icons.serial=icons.dilution;
   const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
-  const tools={percent:{title:'Percent solutions',description:'Choose the percentage basis explicitly, then prepare a solution or convert its concentration.'},molar:{title:'Molar solutions',description:'Calculate the mass to weigh, or the molarity of a solution prepared from a known mass.'},dilution:{title:'Dilution',description:'Calculate how much stock you need. Stock and target units can differ within the same concentration basis.'},concentrated:{title:'From concentrated reagents',description:'Use the stock’s mass assay, density and molar mass to prepare a target molar concentration.'},conversions:{title:'Concentration conversions',description:'Convert mass concentration, molarity and % w/v using an explicit concentration basis.'},serial:{title:'Serial dilution',description:'Plan transfer and diluent volumes, and calculate the concentration of each tube.'},converter:{title:'Unit converter',description:'Convert values within the same physical quantity, with consistent units.'}};
+  const tools={percent:{title:'Percent solutions',description:'Choose the percentage basis explicitly, then prepare a solution or convert its concentration.'},molar:{title:'Molar solutions',description:'Calculate the mass to weigh, or the molarity of a solution prepared from a known mass.'},dilution:{title:'Dilution',description:'Calculate how much stock you need. Stock and target units can differ within the same concentration basis.'},concentrated:{title:'From concentrated reagents',description:'Use the stock’s % w/w concentration, density and molar mass to prepare a target molar concentration.'},conversions:{title:'Concentration conversions',description:'Convert mass concentration, molarity and % w/v using an explicit concentration basis.'},serial:{title:'Serial dilution',description:'Plan transfer and diluent volumes, and calculate the concentration of each tube.'},converter:{title:'Unit converter',description:'Convert values within the same physical quantity, with consistent units.'}};
   const defaults={percent:{operation:'prepare',assay:'100',basis:'wv',direction:'toMolar',percent:'',amount:'',amountUnit:'mL',mw:'',density:'',molar:'',molarUnit:'M'},molar:{operation:'mass',mw:'',concentration:'',concentrationUnit:'mM',volume:'',volumeUnit:'mL',assay:'100',mass:'',massUnit:'mg'},dilution:{basis:'molar',stock:'',stockUnit:'M',target:'',targetUnit:'mM',amount:'',amountUnit:'mL'},concentrated:{assay:'',density:'',mw:'',target:'',targetUnit:'M',volume:'',volumeUnit:'mL'},conversions:{direction:'massToMolar',value:'',inputUnit:'mg/mL',outputUnit:'mM',mw:''},serial:{basis:'molar',stock:'',stockUnit:'mM',factor:'',tubes:'',amount:'',amountUnit:'mL',volumeBasis:'mixed'},converter:{category:'volume',value:'',from:'mL',to:'µL'}};
   const memory=Object.fromEntries(Object.keys(tools).map(k=>[k,{values:{...defaults[k]},result:null}]));
   const sessionHistory=[];
@@ -27,20 +27,20 @@
     if(active==='percent'){
       let html=select('operation','Calculation',[['prepare','Prepare a percent solution'],['convert','Convert percent and molarity']],{full:true,layout:true});
       html+=select('basis','Percentage basis',v.operation==='prepare'?basisOptions:basisOptions.filter(([k])=>k!=='vv'),{full:true,layout:true});
-      if(v.operation==='prepare')return html+input('percent','Desired percentage',{unit:'%',placeholder:'e.g. 5'})+input('amount',v.basis==='ww'?'Final solution mass':'Final solution volume',{category:v.basis==='ww'?'mass':'volume',unitKey:'amountUnit',placeholder:'e.g. 100'})+(v.basis==='vv'?'<p class="form-foot full">% v/v assumes a pure liquid. Mass-assay correction needs density information and is available here only for % w/v and % w/w.</p>':input('assay','Reagent mass assay',{unit:'% w/w',full:true,placeholder:'100',hint:'Default 100%. Corrects the reagent mass for chemical content by mass.'}));
+      if(v.operation==='prepare')return html+input('percent','Desired percentage',{unit:'%',placeholder:'e.g. 5'})+input('amount',v.basis==='ww'?'Final solution mass':'Final solution volume',{category:v.basis==='ww'?'mass':'volume',unitKey:'amountUnit',placeholder:'e.g. 100'})+(v.basis==='vv'?'<p class="form-foot full">% v/v assumes a pure liquid. Purity correction needs density information and is available here only for % w/v and % w/w.</p>':input('assay','Reagent purity',{unit:'%',full:true,placeholder:'100',hint:'From the bottle label, for example \'Assay ≥ 98%\'. Leave at 100 for a pure reagent.'}));
       html+=select('direction','Conversion',[['toMolar','Percent to molarity'],['toPercent','Molarity to percent']],{full:true,layout:true});
       html+=v.direction==='toMolar'?input('percent','Solution concentration',{unit:'%',placeholder:'e.g. 0.9'}):input('molar','Molar concentration',{category:'molar',unitKey:'molarUnit',placeholder:'e.g. 0.154'});
       html+=input('mw','Molar mass',{unit:'g/mol',placeholder:'e.g. 58.44'});
       if(v.basis==='ww')html+=input('density','Final solution density',{unit:'g/mL',full:true,placeholder:'e.g. 1.02',hint:'Use the density of this solution, not of the pure solute.'});
       return html;
     }
-    if(active==='molar')return select('operation','Calculation',[['mass','Calculate mass to weigh'],['concentration','Calculate molarity from mass']],{full:true,layout:true})+input('mw','Molar mass',{unit:'g/mol',full:true,placeholder:'e.g. 58.44',hint:'Use the exact compound form, including hydrates.'})+(v.operation==='mass'?input('concentration','Target concentration',{category:'molar',unitKey:'concentrationUnit',placeholder:'e.g. 100'}):input('mass','Mass weighed',{category:'mass',unitKey:'massUnit',placeholder:'e.g. 584.4'}))+input('volume','Final solution volume',{category:'volume',unitKey:'volumeUnit',placeholder:'e.g. 100'})+input('assay','Mass assay',{unit:'% w/w',full:true,placeholder:'100',hint:'Default 100%. Use mass content, not HPLC area purity.'});
+    if(active==='molar')return select('operation','Calculation',[['mass','Calculate mass to weigh'],['concentration','Calculate molarity from mass']],{full:true,layout:true})+input('mw','Molar mass',{unit:'g/mol',full:true,placeholder:'e.g. 58.44',hint:'Use the exact compound form, including hydrates.'})+(v.operation==='mass'?input('concentration','Target concentration',{category:'molar',unitKey:'concentrationUnit',placeholder:'e.g. 100'}):input('mass','Mass weighed',{category:'mass',unitKey:'massUnit',placeholder:'e.g. 584.4'}))+input('volume','Final solution volume',{category:'volume',unitKey:'volumeUnit',placeholder:'e.g. 100'})+input('assay','Reagent purity',{unit:'%',full:true,placeholder:'100',hint:'From the bottle label, for example \'Assay ≥ 98%\'. Leave at 100 for a pure reagent.'});
     if(active==='dilution'){
       const html=select('basis','Concentration basis',[['molar','Molar concentration'],['massConcentration','Mass concentration'],['wv','Percent w/v'],['vv','Percent v/v'],['ww','Percent w/w']],{full:true,layout:true});
       const cat=['molar','massConcentration'].includes(v.basis)?v.basis:'';
       return html+input('stock','Stock concentration',{unit:cat?'':'%',category:cat,unitKey:'stockUnit',placeholder:'e.g. 1'})+input('target','Target concentration',{unit:cat?'':'%',category:cat,unitKey:'targetUnit',placeholder:'e.g. 10'})+input('amount',v.basis==='ww'?'Final solution mass':'Final solution volume',{category:v.basis==='ww'?'mass':'volume',unitKey:'amountUnit',full:true,placeholder:'e.g. 100'});
     }
-    if(active==='concentrated')return input('assay','Stock assay',{unit:'% w/w',placeholder:'e.g. 37'})+input('density','Stock density',{unit:'g/mL',placeholder:'e.g. 1.19'})+input('mw','Solute molar mass',{unit:'g/mol',full:true,placeholder:'e.g. 36.46',hint:'Assay and molar mass must refer to the same solute species.'})+input('target','Target concentration',{category:'molar',unitKey:'targetUnit',placeholder:'e.g. 0.1'})+input('volume','Final solution volume',{category:'volume',unitKey:'volumeUnit',placeholder:'e.g. 100'});
+    if(active==='concentrated')return input('assay','Stock concentration',{unit:'% w/w',placeholder:'e.g. 37'})+input('density','Stock density',{unit:'g/mL',placeholder:'e.g. 1.19'})+input('mw','Solute molar mass',{unit:'g/mol',full:true,placeholder:'e.g. 36.46',hint:'The stock % w/w and molar mass must refer to the same solute species.'})+input('target','Target concentration',{category:'molar',unitKey:'targetUnit',placeholder:'e.g. 0.1'})+input('volume','Final solution volume',{category:'volume',unitKey:'volumeUnit',placeholder:'e.g. 100'});
     if(active==='conversions'){
       let html=select('direction','Conversion',[['massToMolar','Mass concentration to molarity'],['molarToMass','Molarity to mass concentration'],['percentToMass','% w/v to mass concentration'],['massToPercent','Mass concentration to % w/v']],{full:true,layout:true});
       if(v.direction==='percentToMass')html+=input('value','Concentration',{unit:'% w/v',full:true,placeholder:'e.g. 1'});
@@ -54,16 +54,16 @@
   }
   const explanations={
     percent:{formula:'m = (% w/v × final volume in mL) / 100',notes:['% w/v is mass per final solution volume. Dissolve first, then make up to the final volume.']},
-    molar:{formula:'m = c × V × MW / f',notes:['c in mol/L; V in L; MW in g/mol; f = mass assay / 100.','The molar mass must match the chemical form being weighed.']},
+    molar:{formula:'m = c × V × MW / f',notes:['c in mol/L; V in L; MW in g/mol; f = reagent purity / 100.','The molar mass must match the chemical form being weighed.']},
     dilution:{formula:'C₁ × V₁ = C₂ × V₂',notes:['Use the same concentration basis for stock and target.','V₂ is the final solution volume, not the volume of added solvent.']},
-    concentrated:{formula:'Cstock = 10 × assay (%) × density / MW; Vstock = Ctarget × Vfinal / Cstock',notes:['Assay is mass percentage (% w/w); density in g/mL; MW in g/mol.','The density, assay and molar mass must describe the same stock and solute.']},
+    concentrated:{formula:'Cstock = 10 × stock % w/w × density / MW; Vstock = Ctarget × Vfinal / Cstock',notes:['Stock % w/w is the concentration printed on the bottle label; density in g/mL; MW in g/mol.','The density, % w/w and molar mass must describe the same stock and solute.']},
     conversions:{formula:'c (M) = mass concentration (g/L) / MW; % w/v = mass concentration (g/L) / 10',notes:['Molar mass in g/mol. Concentration conversions do not change the chemical form.','1% w/v = 10 g/L = 10 mg/mL.']},serial:{formula:'Ci = Cstock / D^i; transfer = mixed volume / D',notes:['Tube 1 is the first diluted tube; mix each tube before transferring onward.','Retained mode calculates backwards so each tube keeps the requested final volume without discarding solution.','Mixed mode uses the requested volume before each onward transfer; the last tube retains the full mixed volume.','Volumes are treated as additive for serial dilution with a compatible diluent.']},converter:{formula:'Output = input × source unit factor / target unit factor',notes:['Conversions stay within the selected quantity.','Molar concentration and mass concentration require molar mass to interconvert; use Concentration conversions.']}
   };
   function guidance(){const v=memory[active].values;let e={formula:explanations[active].formula,notes:[...explanations[active].notes]};
     if(active==='percent'){
       if(v.operation==='prepare'&&v.basis==='vv')e={formula:'Vsolute = (% v/v × final volume in mL) / 100',notes:['% v/v is mL of solute per 100 mL of final solution.','Make up to the final volume; solvent and solute volumes are not assumed additive.']};
-      if(v.operation==='prepare'&&v.basis==='ww')e={formula:'mreagent = (% w/w × final mass) / (100 × f); msolvent = final mass − mreagent',notes:['% w/w uses total solution mass. f = reagent mass assay / 100.','Reagent impurities are included in its mass and in the final solution mass. The target % w/w cannot exceed the reagent assay.']};
-      if(v.operation==='prepare'&&v.basis==='wv')e={formula:'mreagent = (% w/v × final volume in mL) / (100 × f)',notes:['% w/v is pure-solute mass per final solution volume. f = mass assay / 100.','The weighed reagent mass is corrected for its mass assay. Make up to final volume.']};
+      if(v.operation==='prepare'&&v.basis==='ww')e={formula:'mreagent = (% w/w × final mass) / (100 × f); msolvent = final mass − mreagent',notes:['% w/w uses total solution mass. f = reagent purity / 100.','Reagent impurities are included in its mass and in the final solution mass. The target % w/w cannot exceed the reagent purity.']};
+      if(v.operation==='prepare'&&v.basis==='wv')e={formula:'mreagent = (% w/v × final volume in mL) / (100 × f)',notes:['% w/v is pure-solute mass per final solution volume. f = reagent purity / 100.','The weighed reagent mass is corrected for its purity. Make up to final volume.']};
       if(v.operation==='convert')e={formula:v.basis==='wv'?'c (M) = 10 × (% w/v) / MW':'c (M) = 10 × (% w/w) × solution density / MW',notes:['The inverse formula converts molarity to the selected percentage basis.','MW in g/mol; density, when needed, in g/mL.']};
     }
     if(active==='molar'&&v.operation==='concentration')e.formula='c = m × f / (MW × V)';
@@ -92,13 +92,13 @@
       if(v.operation==='prepare'){
         const total=base(v,'amount',v.basis==='ww'?'Final mass':'Final volume',v.basis==='ww'?'mass':'volume','amountUnit');
         const amount=v.basis==='ww'?total:total*1000;
-        const assay=v.basis==='vv'?100:parse(v,'assay','Reagent mass assay');
+        const assay=v.basis==='vv'?100:parse(v,'assay','Reagent purity');
         const r=C.percentPrepare(p,amount,v.basis,assay);
         if(v.basis==='wv'){result.primary={...bestMass(r.solute),label:'Reagent to weigh'};result.secondary.push({...bestMass(r.pure),label:'Pure-solute mass'});result.instruction='Weigh '+showQ(result.primary)+' of the stated reagent. Dissolve in a suitable solvent, then make up to a final solution volume of '+showQ(bestVolume(total))+'.';}
         if(v.basis==='vv'){result.primary={...bestVolume(r.solute/1000),label:'Solute volume to measure'};result.instruction='Measure '+showQ(result.primary)+' of solute and make up to a final solution volume of '+showQ(bestVolume(total))+'.';if(p===100)result.instruction='Use '+showQ(result.primary)+' of solute. No dilution is required at 100% v/v.';}
         if(v.basis==='ww'){result.primary={...bestMass(r.solute),label:'Reagent to weigh'};result.secondary.push({...bestMass(r.pure),label:'Pure-solute mass'});result.secondary.push({...bestMass(r.solvent),label:'Solvent mass'});result.instruction='Combine '+showQ(result.primary)+' of the stated reagent with '+showQ(bestMass(r.solvent))+' of solvent for '+showQ(bestMass(total))+' of final solution.';}
         result.working=format(p)+' × '+format(amount)+' / (100'+(v.basis==='vv'?'':' × '+format(assay/100))+') = '+format(r.solute)+(v.basis==='vv'?' mL':' g');
-        result.notes.push(v.basis==='vv'?'Assumes a pure liquid solute.':('Reagent mass assay: '+format(assay)+'%. Check solubility and the exact chemical form.'));
+        result.notes.push(v.basis==='vv'?'Assumes a pure liquid solute.':('Reagent purity: '+format(assay)+'%. Check solubility and the exact chemical form.'));
       }else{
         const mw=parse(v,'mw','Molar mass'),density=v.basis==='ww'?parse(v,'density','Solution density'):undefined;
         const inputValue=v.direction==='toMolar'?p:base(v,'molar','Molar concentration','molar','molarUnit');
@@ -109,7 +109,7 @@
       }
     }
     if(active==='molar'){
-      const mw=parse(v,'mw','Molar mass'),volume=base(v,'volume','Final volume','volume','volumeUnit'),assay=parse(v,'assay','Mass assay');
+      const mw=parse(v,'mw','Molar mass'),volume=base(v,'volume','Final volume','volume','volumeUnit'),assay=parse(v,'assay','Reagent purity');
       if(v.operation==='mass'){
         const concentration=base(v,'concentration','Target concentration','molar','concentrationUnit'),mass=C.molarMass(concentration,volume,mw,assay);
         result.primary={...bestMass(mass),label:'Reagent to weigh'};
@@ -120,7 +120,7 @@
         const mass=base(v,'mass','Mass weighed','mass','massUnit'),concentration=C.molarity(mass,volume,mw,assay);
         result.primary={...bestMolar(concentration),label:'Molar concentration'};
         result.secondary=[{value:concentration,unit:'M',label:'Concentration in mol/L'}, {...bestVolume(volume),label:'Final solution volume'}];
-        result.instruction='The stated reagent mass in this final solution volume gives '+showQ(result.primary)+', accounting for a '+format(assay)+'% mass assay.';
+        result.instruction='The stated reagent mass in this final solution volume gives '+showQ(result.primary)+', accounting for a '+format(assay)+'% reagent purity.';
         result.working=format(mass)+' g × '+format(assay/100)+' / ('+format(mw)+' g/mol × '+format(volume)+' L) = '+format(concentration)+' mol/L';
       }
     }
@@ -137,7 +137,7 @@
       result.notes.push('Stock and target describe the same solute; no reaction or solute loss is assumed.');
     }
     if(active==='concentrated'){
-      const assay=parse(v,'assay','Stock assay'),density=parse(v,'density','Stock density'),mw=parse(v,'mw','Solute molar mass'),target=base(v,'target','Target concentration','molar','targetUnit'),volume=base(v,'volume','Final volume','volume','volumeUnit');
+      const assay=parse(v,'assay','Stock concentration'),density=parse(v,'density','Stock density'),mw=parse(v,'mw','Solute molar mass'),target=base(v,'target','Target concentration','molar','targetUnit'),volume=base(v,'volume','Final volume','volume','volumeUnit');
       const r=C.concentrated(assay,density,mw,target,volume);
       result.primary={...bestVolume(r.take),label:'Concentrated stock volume'};
       result.secondary=[{...bestMolar(r.stock),label:'Calculated stock concentration'},{...bestVolume(volume),label:'Final solution volume'}];

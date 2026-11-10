@@ -45,6 +45,12 @@ rejects(()=>c.convert(1,'mass','g','L'));rejects(()=>c.convert(Infinity,'mass','
 rejects(()=>c.molarMass(1e300,1e300,100));rejects(()=>c.molarMass(1e-300,1e-300,1));
 checks++;assert(!/<(?:script|link)[^>]+(?:src|href)=["']https?:/i.test(html),'Runtime must not load network assets');
 checks++;assert(html.includes('data:font/ttf;base64,'),'Font must work offline');
+// 0.2.3: licence texts live in one comment at the top of the HTML file.
+{const head=html.match(/^<!doctype html>\n<!--([\s\S]*?)-->/);checks++;assert(head,'Licence comment must follow the doctype');
+ const body=head[1];checks++;assert(!body.includes('--'),'Licence comment must not contain --');
+ for(const text of ['Copyright (c) 2026 Ugur Comlekcioglu','THE SOFTWARE IS PROVIDED "AS IS"','SIL OPEN FONT LICENSE Version 1.1','Copyright 2022 The Instrument Sans Project Authors','5) The Font Software, modified or unmodified, in part or in whole,'])
+ {checks++;assert(body.includes(text),'Licence comment is missing: '+text);}
+ checks++;assert(!fs.existsSync(__dirname+'/app/LICENSE.txt')&&!fs.existsSync(__dirname+'/app/FONT-LICENSE.txt'),'Licence files belong in the HTML, not beside it');}
 // Draft 0.2: ambiguous separators must never silently change an intended order of magnitude.
 for(const ambiguous of ['1.000','2,500','123.456','+1.000','-1,234']){
   checks++;assert(c.ambiguity(ambiguous).includes('Did you mean'));
